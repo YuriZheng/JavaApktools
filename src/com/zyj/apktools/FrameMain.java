@@ -1,5 +1,7 @@
 package com.zyj.apktools;
 
+import com.zyj.apktools.component.frame.MainFrameBuilder;
+
 /**
  * CREATED ON: 2018/4/10 15:29
  * <p>
@@ -17,7 +19,7 @@ public final class FrameMain {
     }
 
     private static void createFrame() {
-        new FrameBuilder().builder().setVisible(true);
+        new MainFrameBuilder().builder().setVisible(true);
     }
 
 }

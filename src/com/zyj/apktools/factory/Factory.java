@@ -6,6 +6,7 @@ import javax.swing.JButton;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JPanel;
+import javax.swing.JSplitPane;
 
 /**
  * CREATED ON: 2018/4/10 16:27
@@ -59,6 +60,16 @@ public abstract class Factory implements ComponentFactory {
 
         public static JPanel create() {
             return new PanelFactory().createComponent();
+        }
+    }
+
+    public static class SplitPanelFactory extends Factory {
+        @Override public JSplitPane createComponent() {
+            return new JSplitPane();
+        }
+
+        public static JSplitPane create() {
+            return new SplitPanelFactory().createComponent();
         }
     }
 

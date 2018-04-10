@@ -13,11 +13,11 @@ import javax.swing.JFrame;
  */
 public final class MainFrame extends JFrame {
 
-    private final FramePresenter presenter;
+    private final MainPresenter presenter;
 
     public MainFrame() throws HeadlessException {
 
-        presenter = new FramePresenter();
+        presenter = new MainPresenter();
 
     }
 }
