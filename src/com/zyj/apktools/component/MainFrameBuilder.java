@@ -1,4 +1,4 @@
-package com.zyj.apktools.component.frame;
+package com.zyj.apktools.component;
 
 import com.zyj.apktools.factory.Factory;
 

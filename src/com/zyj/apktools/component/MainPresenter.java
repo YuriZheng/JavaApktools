@@ -1,4 +1,4 @@
-package com.zyj.apktools.component.menu;
+package com.zyj.apktools.component;
 
 import java.awt.event.ActionEvent;
 
@@ -6,19 +6,15 @@ import javax.swing.AbstractAction;
 import javax.swing.Action;
 
 /**
- * CREATED ON: 2018/4/10 17:49
+ * CREATED ON: 2018/4/10 16:15
  * <p>
  * Author: Yuri.zheng<br>
  * Email: 497393102@qq.com<br>
- * Description: NON
+ * Description: 主界面的逻辑控制器，以组合的方式控制界面上组件业务逻辑
  */
-public final class MenuPresenter {
+public final class MainPresenter {
 
-    private final MenuPanel menuPanel;
-
-    public MenuPresenter(MenuPanel menuPanel) {
-        this.menuPanel = menuPanel;
-    }
+    private final MainFrame mainFrame;
 
     private AbstractAction actionOpenFile = new AbstractAction() {
         @Override public void actionPerformed(ActionEvent e) {
@@ -49,6 +45,12 @@ public final class MenuPresenter {
             System.out.println("5555");
         }
     };
+
+
+    public MainPresenter(MainFrame mainFrame) {
+        this.mainFrame = mainFrame;
+    }
+
 
     /**
      * 打开文件

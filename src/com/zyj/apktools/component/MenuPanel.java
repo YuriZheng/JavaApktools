@@ -1,4 +1,4 @@
-package com.zyj.apktools.component.menu;
+package com.zyj.apktools.component;
 
 import com.zyj.apktools.factory.Factory;
 
@@ -15,10 +15,10 @@ import javax.swing.JMenuItem;
  */
 public final class MenuPanel {
 
-    private final MenuPresenter presenter;
+    private final MainPresenter presenter;
 
-    public MenuPanel() {
-        presenter = new MenuPresenter(this);
+    public MenuPanel(MainPresenter p) {
+        presenter = p;
     }
 
     /**
@@ -28,10 +28,6 @@ public final class MenuPanel {
         bar.add(buildFileMenu(Factory.MenuFactory.create()));
         bar.add(buildActionMenu(Factory.MenuFactory.create()));
         bar.add(buildSettingMenu(Factory.MenuFactory.create()));
-    }
-
-    public MenuPresenter getMenuPresenter() {
-        return presenter;
     }
 
     private JMenu buildFileMenu(JMenu fileMenu) {

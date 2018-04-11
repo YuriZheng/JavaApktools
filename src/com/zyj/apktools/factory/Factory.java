@@ -1,6 +1,6 @@
 package com.zyj.apktools.factory;
 
-import com.zyj.apktools.component.frame.MainFrame;
+import com.zyj.apktools.component.MainFrame;
 
 import javax.swing.JButton;
 import javax.swing.JLabel;

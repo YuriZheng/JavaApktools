@@ -1,6 +1,7 @@
 package com.zyj.apktools;
 
-import com.zyj.apktools.component.frame.MainFrameBuilder;
+import com.zyj.apktools.command.Invoker;
+import com.zyj.apktools.component.MainFrameBuilder;
 
 /**
  * CREATED ON: 2018/4/10 15:29
@@ -15,7 +16,9 @@ public final class FrameMain {
     }
 
     public static void main(String[] args) {
-        FrameMain.createFrame();
+//        FrameMain.createFrame();
+
+        Invoker.getInstence().commandTest();
     }
 
     private static void createFrame() {

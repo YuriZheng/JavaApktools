@@ -1,7 +1,5 @@
-package com.zyj.apktools.component.frame;
+package com.zyj.apktools.component;
 
-import com.zyj.apktools.component.menu.MenuPanel;
-import com.zyj.apktools.component.menu.MenuPresenter;
 import com.zyj.apktools.factory.Factory;
 
 import java.awt.BorderLayout;
@@ -56,17 +54,12 @@ public final class MainFrame extends JFrame {
         });
     }
 
-    public void setMenuPresenter(MenuPresenter presenter) {
-        this.presenter.setMenuPresenter(presenter);
-    }
-
 
     // 创建菜单栏
     private void addMenu(MainFrame mainFrame) {
         JMenuBar menubar = Factory.MenuBarFactory.create();
-        MenuPanel menuPanel = new MenuPanel();
+        MenuPanel menuPanel = new MenuPanel(presenter);
         menuPanel.buildMenu(menubar);
-        mainFrame.setMenuPresenter(menuPanel.getMenuPresenter());
 
         mainFrame.setJMenuBar(menubar);
     }
