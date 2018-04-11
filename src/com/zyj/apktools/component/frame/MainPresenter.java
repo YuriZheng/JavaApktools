@@ -1,5 +1,7 @@
 package com.zyj.apktools.component.frame;
 
+import com.zyj.apktools.component.menu.MenuPresenter;
+
 /**
  * CREATED ON: 2018/4/10 16:15
  * <p>
@@ -9,5 +11,16 @@ package com.zyj.apktools.component.frame;
  */
 public final class MainPresenter {
 
+    private final MainFrame mainFrame;
+
+    private MenuPresenter menuPresenter;
+
+    public MainPresenter(MainFrame mainFrame) {
+        this.mainFrame = mainFrame;
+    }
+
+    public void setMenuPresenter(MenuPresenter presenter) {
+        menuPresenter = presenter;
+    }
 
 }

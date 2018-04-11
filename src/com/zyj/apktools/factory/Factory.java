@@ -3,10 +3,14 @@ package com.zyj.apktools.factory;
 import com.zyj.apktools.component.frame.MainFrame;
 
 import javax.swing.JButton;
+import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JSplitPane;
+import javax.swing.JTextArea;
+import javax.swing.JTextField;
 
 /**
  * CREATED ON: 2018/4/10 16:27
@@ -50,6 +54,49 @@ public abstract class Factory implements ComponentFactory {
 
         public static JMenuBar create() {
             return new MenuBarFactory().createComponent();
+        }
+    }
+
+    public static class MenuItemFactory extends Factory {
+
+        @Override public JMenuItem createComponent() {
+            return new JMenuItem();
+        }
+
+        public static JMenuItem create() {
+            return new MenuItemFactory().createComponent();
+        }
+    }
+
+    public static class LabelFactory extends Factory {
+
+        @Override public JLabel createComponent() {
+            return new JLabel();
+        }
+
+        public static JLabel create() {
+            return new LabelFactory().createComponent();
+        }
+    }
+
+    public static class TextAreaFactory extends Factory {
+        @Override public JTextArea createComponent() {
+            return new JTextArea();
+        }
+
+        public static JTextArea create() {
+            return new TextAreaFactory().createComponent();
+        }
+    }
+
+    public static class TextFieldFactory extends Factory {
+
+        @Override public JTextField createComponent() {
+            return new JTextField();
+        }
+
+        public static JTextField create() {
+            return new TextFieldFactory().createComponent();
         }
     }
 
