@@ -13,6 +13,8 @@ import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
@@ -57,6 +59,14 @@ public final class MainFrame extends JFrame {
         addComponentListener(new ComponentAdapter() {
             @Override public void componentResized(ComponentEvent e) {
                 setPathInputLength(pathInput);
+            }
+        });
+
+        addWindowListener(new WindowAdapter() {
+            @Override public void windowClosed(WindowEvent e) {
+                super.windowClosed(e);
+                listModel.clear();
+                presenter.destory();
             }
         });
     }
@@ -173,7 +183,7 @@ public final class MainFrame extends JFrame {
         setPathInputLength(pathInput);
 
         JButton choose = Factory.ButtonFactory.create();
-        choose.setAction(presenter.getOpenFileAction());
+        choose.setAction(presenter.getChooseFile());
         choose.setText("选择");
 
         topPanel.add(pathInput);
@@ -190,7 +200,7 @@ public final class MainFrame extends JFrame {
         listModel = new DefaultListModel();
         logPanel.setModel(listModel);
         scrollPane.setViewportView(logPanel);
-        
+
         logPanel.setBorder(new EmptyBorder(10, 5, 10, 5));
         logPanel.setOpaque(true);
         logPanel.setBackground(bColor);

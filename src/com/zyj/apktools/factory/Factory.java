@@ -2,7 +2,10 @@ package com.zyj.apktools.factory;
 
 import com.zyj.apktools.component.MainFrame;
 
+import java.awt.Component;
+
 import javax.swing.JButton;
+import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JMenu;
@@ -151,6 +154,16 @@ public abstract class Factory implements ComponentFactory {
 
         public static JButton create() {
             return new ButtonFactory().createComponent();
+        }
+    }
+
+    public static class FileChooserFactory extends Factory {
+        @Override public JFileChooser createComponent() {
+            return new JFileChooser();
+        }
+
+        public static JFileChooser create() {
+            return new FileChooserFactory().createComponent();
         }
     }
 

@@ -37,23 +37,4 @@ public final class MainFrameBuilder {
         return frame;
     }
 
-
-    private static class FrameInfo {
-        /**
-         * 窗口标题
-         */
-        static String FRAME_TITLE = "Apktool工具";
-
-        /**
-         * 窗体大小
-         */
-        static Dimension FRAME_MIN_SIZE = new Dimension(Toolkit.getDefaultToolkit().getScreenSize().width >> 1,
-                Toolkit.getDefaultToolkit().getScreenSize().height >> 1);
-
-        /**
-         * 窗体是否可改变大小
-         */
-        static boolean FRAME_RESIZEABLE = true;
-    }
-
 }

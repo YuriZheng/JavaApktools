@@ -33,10 +33,20 @@ public final class MenuPanel {
     private JMenu buildFileMenu(JMenu fileMenu) {
         fileMenu.setText("文件");
         JMenuItem openItem = Factory.MenuItemFactory.create();
-        openItem.setAction(presenter.getOpenFileAction());
-        openItem.setText("打开");
+        openItem.setAction(presenter.getChooseApkAction());
+        openItem.setText("选择反编译APK");
+
+        JMenuItem chooseItem = Factory.MenuItemFactory.create();
+        chooseItem.setAction(presenter.getBuildApkAction());
+        chooseItem.setText("选择重编译文件夹");
+
+        JMenuItem exitItem = Factory.MenuItemFactory.create();
+        exitItem.setAction(presenter.getExitAction());
+        exitItem.setText("退出");
 
         fileMenu.add(openItem);
+        fileMenu.add(chooseItem);
+        fileMenu.add(exitItem);
         return fileMenu;
     }
 

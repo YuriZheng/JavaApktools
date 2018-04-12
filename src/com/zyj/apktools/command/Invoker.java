@@ -45,7 +45,20 @@ public final class Invoker {
      * 开始反编译apk
      */
     public void comandDecod(String fullPath, InvokerCallback callback) {
-        singleThread.submit(() -> command.execute(String.format(decodeCommandString, fullPath, fullPath.substring(0, fullPath.lastIndexOf("."))), callback));
+        singleThread.submit(() -> command.execute(String.format(decodeCommandString, fullPath,
+                fullPath.substring(0, fullPath.lastIndexOf("."))), callback));
+    }
+
+    public void comandBuild(String fullPath, InvokerCallback callback) {
+        final String separator = SomeUtils.getFileSeparator();
+        String tagPath = null;
+        if (!fullPath.contains(separator)) {
+            tagPath = fullPath + separator + fullPath;
+        } else {
+            tagPath = fullPath + separator + fullPath.substring(fullPath.lastIndexOf(SomeUtils.getFileSeparator()) + 1) + ".apk";
+        }
+        final String tmp = tagPath;
+        singleThread.submit(() -> command.execute(String.format(buildCommandString, fullPath, tmp), callback));
     }
 
     public void destory() {
@@ -58,5 +71,10 @@ public final class Invoker {
      * 反编译apk命令，两个参数：一个apk路径，一个生成的文件路径（该文件路径应该不存在）
      */
     private final String decodeCommandString = decodJar + "apktool decode %s -o %s";
+
+    /**
+     * 重编译apk命令，两个参数：一个文件夹路径，一个生成的apk名称（该文件应该不存在）
+     */
+    private final String buildCommandString = decodJar + "apktool build %s -o %s";
 
 }
