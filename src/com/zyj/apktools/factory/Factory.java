@@ -4,10 +4,12 @@ import com.zyj.apktools.component.MainFrame;
 
 import javax.swing.JButton;
 import javax.swing.JLabel;
+import javax.swing.JList;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
@@ -97,6 +99,28 @@ public abstract class Factory implements ComponentFactory {
 
         public static JTextField create() {
             return new TextFieldFactory().createComponent();
+        }
+    }
+
+    public static class ListFactory extends Factory {
+
+        @Override public JList createComponent() {
+            return new JList();
+        }
+
+        public static JList create() {
+            return new ListFactory().createComponent();
+        }
+    }
+
+    public static class ScrollPaneFactory extends Factory {
+
+        @Override public JScrollPane createComponent() {
+            return new JScrollPane();
+        }
+
+        public static JScrollPane create() {
+            return new ScrollPaneFactory().createComponent();
         }
     }
 

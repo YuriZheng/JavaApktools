@@ -11,11 +11,11 @@ public interface Command {
     /**
      * 正常打印信息
      */
-    int RESULT_NORMAL = 0;
+    String RESULT_NORMAL = "I";
     /**
      * 错误或警告
      */
-    int RESULT_ERROR = 1;
+    String RESULT_ERROR = "E";
 
     /**
      * 命令执行

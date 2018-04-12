@@ -1,6 +1,6 @@
 package com.zyj.apktools.command;
 
-import com.zyj.apktools.Log;
+import com.zyj.apktools.SomeUtils;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -25,36 +25,42 @@ class JarReceiver implements Receiver {
             final Process process = rt.exec(command);
             thread.execute(() -> {
                 try {
-                    readMessage(Command.RESULT_NORMAL, new BufferedReader(new InputStreamReader(process.getInputStream(), "utf-8")), result);
+                    readMessage(Command.RESULT_NORMAL,
+                            new BufferedReader(new InputStreamReader(process.getInputStream(), "utf-8")), result);
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
             });
             thread.execute(() -> {
                 try {
-                    readMessage(Command.RESULT_ERROR, new BufferedReader(new InputStreamReader(process.getErrorStream(), "utf-8")), result);
+                    readMessage(Command.RESULT_ERROR,
+                            new BufferedReader(new InputStreamReader(process.getErrorStream(), "utf-8")), result);
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
             });
-            Log.l(command + " 执行结果: " + process.waitFor());
+            int waitValue = process.waitFor();
+            SomeUtils.l(command + " 执行结果: " + waitValue);
+            if (result != null && waitValue == 0) {
+                synchronized (result) {
+                    result.callback(Command.RESULT_NORMAL, "执行成功");
+                }
+            }
             process.destroy();
         } catch (IOException e) {
             e.printStackTrace();
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        thread.shutdown();
     }
 
-    private void readMessage(int status, BufferedReader reader, InvokerCallback result) throws IOException {
+    private void readMessage(String status, BufferedReader reader, InvokerCallback result) throws IOException {
         if (result != null) {
             String line = null;
             while ((line = reader.readLine()) != null) {
-                if (result != null) {
-                    synchronized (result) {
-                        result.callback(status, line);
-                    }
+                synchronized (result) {
+                    System.out.println(line);
+                    result.callback(status, line);
                 }
             }
         }

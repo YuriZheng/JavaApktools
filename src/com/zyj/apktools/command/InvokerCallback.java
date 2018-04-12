@@ -15,6 +15,6 @@ public interface InvokerCallback {
      * @param statue  回调状态，{@link Command#RESULT_NORMAL}、{@link Command#RESULT_ERROR}
      * @param message 回调消息
      */
-    void callback(int statue, String message);
+    void callback(String statue, String message);
 
 }

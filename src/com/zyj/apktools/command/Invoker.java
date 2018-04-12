@@ -1,5 +1,7 @@
 package com.zyj.apktools.command;
 
+import com.zyj.apktools.SomeUtils;
+
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -14,6 +16,8 @@ public final class Invoker {
 
     private static Invoker instance;
     private Command command = new JarCommand(new JarReceiver());
+    private final String apkJarName = "apktool_2.3.2.jar";
+    private final String decodJar = String.format("java -jar .%slibs%s%s ", SomeUtils.getFileSeparator(), SomeUtils.getFileSeparator(), apkJarName);
     private final ExecutorService singleThread = Executors.newSingleThreadExecutor();
 
     private Invoker() {
@@ -34,7 +38,14 @@ public final class Invoker {
      * 测试方法
      */
     public void commandTest() {
-        singleThread.submit(() -> command.execute("java -version", (statue, message) -> System.out.println(statue + ", " + message)));
+        singleThread.submit(() -> command.execute(decodJar + "apktool d 1.apk", (statue, message) -> System.out.println(statue + ", " + message)));
+    }
+
+    /**
+     * 开始反编译apk
+     */
+    public void comandDecod(String fullPath, InvokerCallback callback) {
+        singleThread.submit(() -> command.execute(String.format(decodeCommandString, fullPath, fullPath.substring(0, fullPath.lastIndexOf("."))), callback));
     }
 
     public void destory() {
@@ -42,5 +53,10 @@ public final class Invoker {
         singleThread.shutdownNow();
         instance = null;
     }
+
+    /**
+     * 反编译apk命令，两个参数：一个apk路径，一个生成的文件路径（该文件路径应该不存在）
+     */
+    private final String decodeCommandString = decodJar + "apktool decode %s -o %s";
 
 }

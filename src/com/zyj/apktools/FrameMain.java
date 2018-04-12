@@ -1,6 +1,5 @@
 package com.zyj.apktools;
 
-import com.zyj.apktools.command.Invoker;
 import com.zyj.apktools.component.MainFrameBuilder;
 
 /**
@@ -16,11 +15,10 @@ public final class FrameMain {
     }
 
     public static void main(String[] args) {
-//        FrameMain.createFrame();
-        Invoker.getInstence().commandTest();
-
-
+        FrameMain.createFrame();
+//        Invoker.getInstence().commandTest();
 //        Invoker.getInstence().destory();
+
     }
 
     private static void createFrame() {
