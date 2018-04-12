@@ -106,7 +106,7 @@ public final class MainPresenter {
     private AbstractAction actionDecodJar = new AbstractAction() {
         @Override public void actionPerformed(ActionEvent e) {
             final String fullPath = mainFrame.getPathText();
-            if (!fullPath.endsWith(apk)) { 
+            if (!fullPath.endsWith(apk)) {
                 showDialog("警告", "只能选择apk文件进行反编译，请先选择文件", JOptionPane.WARNING_MESSAGE);
                 return;
             }
