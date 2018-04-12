@@ -1,7 +1,7 @@
 package com.zyj.apktools.command;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 /**
  * CREATED ON: 2018/4/11 17:18
@@ -13,12 +13,8 @@ import java.util.Map;
 public final class Invoker {
 
     private static Invoker instance;
-
-    private static Map<String, Command> commandMap = new HashMap<>();
-
-    static {
-        commandMap.put(COMMAND_KEY.COMMAND_TEST, new JarCommand(new JarCommand.TestReceiver()));
-    }
+    private Command command = new JarCommand(new JarReceiver());
+    private final ExecutorService singleThread = Executors.newSingleThreadExecutor();
 
     private Invoker() {
     }
@@ -35,14 +31,16 @@ public final class Invoker {
     }
 
     /**
-     * 开启测试方法
+     * 测试方法
      */
     public void commandTest() {
-        commandMap.get(COMMAND_KEY.COMMAND_TEST).execute();
+        singleThread.submit(() -> command.execute("java -version", (statue, message) -> System.out.println(statue + ", " + message)));
     }
 
-    static class COMMAND_KEY {
-        final static String COMMAND_TEST = "_test";
+    public void destory() {
+        command.destory();
+        singleThread.shutdownNow();
+        instance = null;
     }
 
 }

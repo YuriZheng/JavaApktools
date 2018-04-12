@@ -1,7 +1,5 @@
 package com.zyj.apktools.command;
 
-import java.util.Optional;
-
 /**
  * CREATED ON: 2018/4/11 17:17
  * <p>
@@ -10,7 +8,16 @@ import java.util.Optional;
  * Description: NON
  */
 public interface Receiver {
+    /**
+     *
+     * @param command
+     * @param result
+     */
+    void doAction(String command, InvokerCallback result);
 
-    void doAction(Optional<ExecResult> result);
+    /**
+     * 销毁相关资源
+     */
+    void destory();
 
 }

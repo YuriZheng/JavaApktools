@@ -3,7 +3,6 @@ package com.zyj.apktools;
 import java.io.IOException;
 import java.util.logging.ConsoleHandler;
 import java.util.logging.FileHandler;
-import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.LogRecord;
 import java.util.logging.Logger;
@@ -20,7 +19,7 @@ public class Log {
 
     private static boolean isDebug = true;
 
-    public static Logger log = null;
+    private static Logger log = null;
 
     private static Logger getFilelogger() {
         if (log == null) {

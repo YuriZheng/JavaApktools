@@ -17,8 +17,10 @@ public final class FrameMain {
 
     public static void main(String[] args) {
 //        FrameMain.createFrame();
-
         Invoker.getInstence().commandTest();
+
+
+//        Invoker.getInstence().destory();
     }
 
     private static void createFrame() {
