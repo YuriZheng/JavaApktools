@@ -130,38 +130,6 @@ public final class MainFrame extends JFrame {
         topPanel.revalidate();
     }
 
-    private void setMyTransferHandler(JTextField field) {
-        field.setTransferHandler(new TransferHandler() {
-
-            @Override public boolean importData(JComponent comp, Transferable t) {
-                try {
-                    Object o = t.getTransferData(DataFlavor.javaFileListFlavor);
-                    String filepath = o.toString();
-                    if (filepath.startsWith("[")) {
-                        filepath = filepath.substring(1);
-                    }
-                    if (filepath.endsWith("]")) {
-                        filepath = filepath.substring(0, filepath.length() - 1);
-                    }
-                    field.setText(filepath);
-                    return true;
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-                return false;
-            }
-
-            @Override public boolean canImport(JComponent comp, DataFlavor[] transferFlavors) {
-                for (int i = 0; i < transferFlavors.length; i++) {
-                    if (DataFlavor.javaFileListFlavor.equals(transferFlavors[i])) {
-                        return true;
-                    }
-                }
-                return false;
-            }
-        });
-    }
-
     private void setPathInputHeight() {
         JPanel topPanel = (JPanel) pathInput.getClientProperty("parent");
         ((FlowLayout) topPanel.getLayout()).setVgap(topPanel.getHeight() / 2 - 15);
@@ -179,7 +147,7 @@ public final class MainFrame extends JFrame {
         pathInput.putClientProperty("parent", topPanel);
         pathInput.setEditable(false);
         pathInput.setText("选择文件");
-        setMyTransferHandler(pathInput);
+        pathInput.setTransferHandler(new DragTransferHandler(pathInput));
         setPathInputLength(pathInput);
 
         JButton choose = Factory.ButtonFactory.create();
@@ -213,8 +181,50 @@ public final class MainFrame extends JFrame {
             item.setText(value);
             item.setBackground(bColor);
             item.setForeground(fColor);
+            item.selectAll();
             return item;
         });
         return scrollPane;
     }
+
+    /**
+     * 支持拖动输入
+     */
+    public static class DragTransferHandler extends TransferHandler {
+
+        final JTextField field;
+
+        public DragTransferHandler(JTextField field) {
+            super();
+            this.field = field;
+        }
+
+        @Override public boolean importData(JComponent comp, Transferable t) {
+            try {
+                Object o = t.getTransferData(DataFlavor.javaFileListFlavor);
+                String filepath = o.toString();
+                if (filepath.startsWith("[")) {
+                    filepath = filepath.substring(1);
+                }
+                if (filepath.endsWith("]")) {
+                    filepath = filepath.substring(0, filepath.length() - 1);
+                }
+                field.setText(filepath);
+                return true;
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return false;
+        }
+
+        @Override public boolean canImport(JComponent comp, DataFlavor[] transferFlavors) {
+            for (int i = 0; i < transferFlavors.length; i++) {
+                if (DataFlavor.javaFileListFlavor.equals(transferFlavors[i])) {
+                    return true;
+                }
+            }
+            return false;
+        }
+    }
+
 }

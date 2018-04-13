@@ -2,8 +2,6 @@ package com.zyj.apktools.factory;
 
 import com.zyj.apktools.component.MainFrame;
 
-import java.awt.Component;
-
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
@@ -12,6 +10,7 @@ import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
+import javax.swing.JPasswordField;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.JTextArea;
@@ -102,6 +101,17 @@ public abstract class Factory implements ComponentFactory {
 
         public static JTextField create() {
             return new TextFieldFactory().createComponent();
+        }
+    }
+
+    public static class PasswordFieldFactory extends Factory {
+
+        @Override public JPasswordField createComponent() {
+            return new JPasswordField();
+        }
+
+        public static JPasswordField create() {
+            return new PasswordFieldFactory().createComponent();
         }
     }
 

@@ -58,10 +58,7 @@ class JarReceiver implements Receiver {
         if (result != null) {
             String line = null;
             while ((line = reader.readLine()) != null) {
-                synchronized (result) {
-                    System.out.println(line);
-                    result.callback(status, line);
-                }
+                result.callback(status, line);
             }
         }
         reader.close();

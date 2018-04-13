@@ -1,5 +1,6 @@
 package com.zyj.apktools.component;
 
+import com.zyj.apktools.SomeUtils;
 import com.zyj.apktools.command.Invoker;
 import com.zyj.apktools.command.InvokerCallback;
 import com.zyj.apktools.factory.Factory;
@@ -38,19 +39,15 @@ public final class MainPresenter {
             cacheBuilder.append(statue);
             cacheBuilder.append("   ");
             cacheBuilder.append(message);
-            insert(cacheBuilder.toString());
+            final String lineMessage = new String(cacheBuilder.toString());
+            SomeUtils.l(lineMessage);
+            insert(lineMessage);
         }
     };
 
     private AbstractAction actionChooseApk = new AbstractAction() {
         @Override public void actionPerformed(ActionEvent e) {
-            JFileChooser jfc = Factory.FileChooserFactory.create();
-            jfc.setFileSelectionMode(JFileChooser.FILES_ONLY);
-            if (mainFrame.getPathText().length() > 0) {
-                jfc.setCurrentDirectory(new File(mainFrame.getPathText()));
-            }
-            jfc.setDialogType(JFileChooser.OPEN_DIALOG);
-            jfc.setFileFilter(new FileFilter() {
+            getFileChooser(new FileFilter() {
                 @Override public boolean accept(File f) {
                     return f.isFile() && f.getAbsolutePath().endsWith(apk);
                 }
@@ -58,48 +55,19 @@ public final class MainPresenter {
                 @Override public String getDescription() {
                     return apk;
                 }
-            });
-            jfc.showDialog(new JLabel(), "选择");
-            File file = jfc.getSelectedFile();
-            if (file != null) {
-                if (!file.getAbsolutePath().endsWith(apk)) {
-                    showDialog("错误", "只支持apk文件的选择", JOptionPane.ERROR_MESSAGE);
-                } else {
-                    mainFrame.setPathText(file.getAbsolutePath());
-                }
-            }
+            }, JFileChooser.FILES_ONLY);
         }
     };
 
     private AbstractAction actionBuildApk = new AbstractAction() {
         @Override public void actionPerformed(ActionEvent e) {
-            JFileChooser jfc = Factory.FileChooserFactory.create();
-            jfc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-            if (mainFrame.getPathText().length() > 0) {
-                jfc.setCurrentDirectory(new File(mainFrame.getPathText()));
-            }
-            jfc.setDialogType(JFileChooser.OPEN_DIALOG);
-            jfc.showDialog(new JLabel(), "选择");
-            File file = jfc.getSelectedFile();
-            if (file != null) {
-                mainFrame.setPathText(file.getAbsolutePath());
-            }
+            getFileChooser(null, JFileChooser.DIRECTORIES_ONLY);
         }
     };
 
     private AbstractAction actionChoseFile = new AbstractAction() {
         @Override public void actionPerformed(ActionEvent e) {
-            JFileChooser jfc = Factory.FileChooserFactory.create();
-            jfc.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
-            if (mainFrame.getPathText().length() > 0) {
-                jfc.setCurrentDirectory(new File(mainFrame.getPathText()));
-            }
-            jfc.setDialogType(JFileChooser.OPEN_DIALOG);
-            jfc.showDialog(new JLabel(), "选择");
-            File file = jfc.getSelectedFile();
-            if (file != null) {
-                mainFrame.setPathText(file.getAbsolutePath());
-            }
+            getFileChooser(null, JFileChooser.FILES_AND_DIRECTORIES);
         }
     };
 
@@ -127,7 +95,14 @@ public final class MainPresenter {
 
     private AbstractAction actionSign = new AbstractAction() {
         @Override public void actionPerformed(ActionEvent e) {
-            System.out.println("4444");
+            final String fullPath = mainFrame.getPathText();
+            if (!fullPath.endsWith(apk)) {
+                showDialog("警告", "只能选择apk文件进行签名，请先选择文件", JOptionPane.WARNING_MESSAGE);
+                return;
+            }
+            new SingerInputDialog(mainFrame).setListener(info -> {
+                Invoker.getInstence().comandSigner(info.keyPath, info.storePassword, info.keyPassword, fullPath, info.alias, callback);
+            }).setVisible(true);
         }
     };
 
@@ -145,6 +120,39 @@ public final class MainPresenter {
 
     private void insert(String message) {
         mainFrame.insertLog(message);
+    }
+
+    private JFileChooser getFileChooser(FileFilter fileFilter, int mode) {
+        JFileChooser jfc = Factory.FileChooserFactory.create();
+        jfc.setFileSelectionMode(mode);
+        if (mainFrame.getPathText().length() > 0) {
+            jfc.setCurrentDirectory(new File(mainFrame.getPathText()));
+        }
+        jfc.setDialogType(JFileChooser.OPEN_DIALOG);
+        if (fileFilter != null) {
+            jfc.setFileFilter(fileFilter);
+        }
+        jfc.showDialog(new JLabel(), "选择");
+
+        File file = jfc.getSelectedFile();
+        String toastMessage = null;
+        if (mode == JFileChooser.DIRECTORIES_ONLY) {
+            if (file != null && file.isFile()) {
+                toastMessage = "只能选择文件夹，请先选择文件夹";
+            }
+        } else if (mode == JFileChooser.FILES_ONLY) {
+            if (file != null && file.isDirectory()) {
+                toastMessage = "只能选择apk文件，请先选择文件";
+            }
+        }
+        if (file != null) {
+            if (toastMessage == null) {
+                mainFrame.setPathText(file.getAbsolutePath());
+            } else {
+                mainFrame.setPathText(file.getAbsolutePath());
+            }
+        }
+        return jfc;
     }
 
     private void showDialog(String title, String message, int messageType) {
@@ -214,6 +222,13 @@ public final class MainPresenter {
     public void destory() {
         Invoker.getInstence().destory();
         // 有可能不执行
+    }
+
+    public static class SignerInfo {
+        String keyPath; // 密钥库位置
+        String storePassword; // 用于密钥库完整性的口令
+        String keyPassword; // 专用密钥的口令（如果不同）
+        String alias; // 密钥别名
     }
 
 }
