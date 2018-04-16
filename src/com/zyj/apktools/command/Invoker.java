@@ -18,7 +18,7 @@ public final class Invoker {
     private static Invoker instance;
     private Command command = new JarCommand(new JarReceiver());
     private final String apkJarName = "apktool_2.3.2.jar";
-    private final String decodJar = String.format("java -jar .%slibs%s%s ", SomeUtils.getFileSeparator(), SomeUtils.getFileSeparator(), apkJarName);
+    private final String decodJar = String.format("java -jar -Duser.language=en -Dfile.encoding=UTF8 .%slibs%s%s ", SomeUtils.getFileSeparator(), SomeUtils.getFileSeparator(), apkJarName);
     private final ExecutorService singleThread = Executors.newSingleThreadExecutor();
 
     private Invoker() {
@@ -43,6 +43,13 @@ public final class Invoker {
     }
 
     /**
+     * 预处理命令
+     */
+    public void commandPre() {
+
+    }
+
+    /**
      * 开始反编译apk
      */
     public void comandDecod(String fullPath, InvokerCallback callback) {
@@ -55,15 +62,16 @@ public final class Invoker {
      */
     public void comandBuild(String fullPath, InvokerCallback callback) {
         final String separator = SomeUtils.getFileSeparator();
-        String parentPath = new File(fullPath).getParent();
-        String tagPath = null;
-        if (!parentPath.contains(separator)) {
-            tagPath = parentPath + ".apk";
-        } else {
-            tagPath = parentPath + separator + fullPath.substring(fullPath.lastIndexOf(SomeUtils.getFileSeparator()) + 1) + ".apk";
+        final String parentPath = new File(fullPath).getParent();
+        final StringBuilder tagPath = new StringBuilder(parentPath);
+        final String suffix = "_out.apk";
+        if (parentPath.contains(separator)) {
+            tagPath.append(separator);
+            tagPath.append(fullPath.substring(fullPath.lastIndexOf(SomeUtils.getFileSeparator()) + 1));
+
         }
-        final String tmp = tagPath;
-        singleThread.submit(() -> command.execute(String.format(buildCommandString, fullPath, tmp), callback));
+        tagPath.append(suffix);
+        singleThread.submit(() -> command.execute(String.format(buildCommandString, fullPath, tagPath.toString()), callback));
     }
 
     /**
@@ -88,12 +96,12 @@ public final class Invoker {
     private final String decodeCommandString = decodJar + "apktool decode %s -o %s";
 
     /**
-     * 重编译apk命令，两个参数：一个文件夹路径，一个生成的apk名称（该文件应该不存在）
+     * 重编译apk命令，两个参数：一个文件夹路径，一个生成的apk路径
      */
-    private final String buildCommandString = decodJar + "apktool build %s -o %s";
+    private final String buildCommandString = decodJar + "apktool build -advance %s -o %s";
 
     /**
-     * jarsigner -verbose -sigalg SHA1withRSA -digestalg SHA1 -keystore itools.jks -storepass Zyj497393102 -keypass Zyj497393102 -signedjar new_signed.apk new.apk itools
+     * jarsigner -verbose -sigalg SHA1withRSA -digestalg SHA1 -keystore itools.jks -storepass *** -keypass *** -signedjar new_signed.apk new.apk itools
      * 开始对apk进行签名
      * 第一个参数：密钥文件路径<br>
      * 第二个参数：密钥文件密码<br>

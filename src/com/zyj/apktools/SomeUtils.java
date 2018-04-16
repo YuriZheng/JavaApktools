@@ -120,4 +120,8 @@ public class SomeUtils {
         return PROPERTIES.getProperty("path.separator");
     }
 
+    public static String getOsName() {
+        return PROPERTIES.getProperty("os.name");
+    }
+
 }

@@ -100,9 +100,8 @@ public final class MainPresenter {
                 showDialog("警告", "只能选择apk文件进行签名，请先选择文件", JOptionPane.WARNING_MESSAGE);
                 return;
             }
-            new SingerInputDialog(mainFrame).setListener(info -> {
-                Invoker.getInstence().comandSigner(info.keyPath, info.storePassword, info.keyPassword, fullPath, info.alias, callback);
-            }).setVisible(true);
+            new SingerInputDialog(mainFrame).setListener(info -> Invoker.getInstence().comandSigner(info.keyPath, info.storePassword,
+                    info.keyPassword, fullPath, info.alias, callback)).setVisible(true);
         }
     };
 
