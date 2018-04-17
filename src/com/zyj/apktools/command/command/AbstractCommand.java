@@ -16,7 +16,8 @@ abstract class AbstractCommand implements Command {
     private final Receiver receiver;
 
     private final String apkJarName = "apktool_2.3.2.jar";
-    private final String decodJar = String.format("java -jar -Duser.language=en -Dfile.encoding=UTF8 .%slibs%s%s ", Utils.getFileSeparator(), Utils.getFileSeparator(), apkJarName);
+    private final String encoding = "-Duser.language=en -Dfile.encoding=UTF8";
+    private final String decodJar = String.format("java -jar %s .%slibs%s%s ", encoding, Utils.getFileSeparator(), Utils.getFileSeparator(), apkJarName);
 
     public AbstractCommand(Receiver receiver) {
         this.receiver = receiver;
@@ -28,5 +29,9 @@ abstract class AbstractCommand implements Command {
 
     public String getDecodJar() {
         return decodJar;
+    }
+
+    public String getEncoding() {
+        return encoding;
     }
 }

@@ -36,7 +36,11 @@ final class RebuildApkCommand extends AbstractCommand {
 
         }
         tagPath.append(suffix);
-        getReceiver().doAction(String.format(buildCommandString, filePath, tagPath.toString()));
+        File outFile = new File(tagPath.toString());
+        if (outFile.exists()) {
+            outFile.delete();
+        }
+        getReceiver().doAction(String.format(buildCommandString, filePath, outFile.getAbsolutePath()));
     }
 
     public RebuildApkCommand setFilePath(String filePath) {

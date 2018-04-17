@@ -39,8 +39,11 @@ final class SignerApkCommand extends AbstractCommand {
     @Override public void execute() {
         File apk = new File(unsignApk);
         String newName = apk.getName().substring(0, apk.getName().lastIndexOf(".")) + "_signed.apk";
-        String outputApk = apk.getParent() + Utils.getFileSeparator() + newName;
-        getReceiver().doAction(String.format(signerCommandString, storPath, storpass, keypass, outputApk, unsignApk, alias));
+        File outFile = new File(apk.getParent() + Utils.getFileSeparator() + newName);
+        if (outFile.exists()) {
+            outFile.delete();
+        }
+        getReceiver().doAction(String.format(signerCommandString, storPath, storpass, keypass, outFile.getAbsolutePath(), unsignApk, alias));
     }
 
     public SignerApkCommand setStorPath(String storPath) {
