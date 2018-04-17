@@ -1,6 +1,5 @@
 package com.zyj.apktools.component;
 
-import com.zyj.apktools.command.Invoker;
 import com.zyj.apktools.factory.Factory;
 
 import java.awt.BorderLayout;
@@ -72,7 +71,6 @@ public final class MainFrame extends JFrame {
 
             @Override public void windowOpened(WindowEvent e) {
                 super.windowOpened(e);
-                Invoker.getInstence().commandPre();
             }
         });
     }

@@ -16,7 +16,7 @@ import java.util.logging.SimpleFormatter;
  * Email: 497393102@qq.com<br>
  * Description: 日志打印
  */
-public class SomeUtils {
+public class Utils {
 
     /**
      * java.version: Java 运行时环境版本

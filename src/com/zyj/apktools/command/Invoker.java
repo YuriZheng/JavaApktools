@@ -1,10 +1,12 @@
 package com.zyj.apktools.command;
 
-import com.zyj.apktools.SomeUtils;
+import com.zyj.apktools.command.command.CommandFactory;
+import com.zyj.apktools.command.receiver.JarReceiver;
 
-import java.io.File;
+import java.util.Optional;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * CREATED ON: 2018/4/11 17:18
@@ -16,10 +18,21 @@ import java.util.concurrent.Executors;
 public final class Invoker {
 
     private static Invoker instance;
-    private Command command = new JarCommand(new JarReceiver());
-    private final String apkJarName = "apktool_2.3.2.jar";
-    private final String decodJar = String.format("java -jar -Duser.language=en -Dfile.encoding=UTF8 .%slibs%s%s ", SomeUtils.getFileSeparator(), SomeUtils.getFileSeparator(), apkJarName);
+    private Receiver receiver = new JarReceiver();
     private final ExecutorService singleThread = Executors.newSingleThreadExecutor();
+
+    /**
+     * 任务同步，同一时间只能运行一个命令
+     */
+    private AtomicBoolean isRunSynchronized = new AtomicBoolean(false);
+
+    private InvokerStateCallback stateCallback = state -> {
+        if (state == InvokerStateCallback.STATE_RUNED) {
+            isRunSynchronized.set(false);
+        } else {
+            isRunSynchronized.compareAndSet(false, true);
+        }
+    };
 
     private Invoker() {
     }
@@ -39,77 +52,63 @@ public final class Invoker {
      * 测试方法
      */
     public void commandTest() {
-        singleThread.submit(() -> command.execute(decodJar + "apktool d 1.apk", (statue, message) -> System.out.println(statue + ", " + message)));
-    }
-
-    /**
-     * 预处理命令
-     */
-    public void commandPre() {
-
+        if (isRunSynchronized.get()) {
+            return;
+        }
+        singleThread.submit(() -> CommandFactory.createTestCommand(receiver, new CommandFactory.CommandParamskBuild()
+                .setMessageCallback(Optional.ofNullable(null))
+                .setStateCallback(Optional.of(stateCallback))
+                .putParamByKey("1111", "2222")).execute());
     }
 
     /**
      * 开始反编译apk
      */
-    public void comandDecod(String fullPath, InvokerCallback callback) {
-        singleThread.submit(() -> command.execute(String.format(decodeCommandString, fullPath,
-                fullPath.substring(0, fullPath.lastIndexOf("."))), callback));
+    public void comandDecod(String fullPath, Optional<InvokerMessageCallback> messageCallback) {
+        if (isRunSynchronized.get()) {
+            return;
+        }
+        singleThread.submit(() -> CommandFactory.createDecodeApkCommand(receiver, new CommandFactory.CommandParamskBuild()
+                .setMessageCallback(messageCallback)
+                .setStateCallback(Optional.of(stateCallback))
+                .putParamByKey("fullPath", fullPath)).execute());
     }
 
     /**
      * 开始重新编译
      */
-    public void comandBuild(String fullPath, InvokerCallback callback) {
-        final String separator = SomeUtils.getFileSeparator();
-        final String parentPath = new File(fullPath).getParent();
-        final StringBuilder tagPath = new StringBuilder(parentPath);
-        final String suffix = "_out.apk";
-        if (parentPath.contains(separator)) {
-            tagPath.append(separator);
-            tagPath.append(fullPath.substring(fullPath.lastIndexOf(SomeUtils.getFileSeparator()) + 1));
-
+    public void comandRebuild(String fullPath, Optional<InvokerMessageCallback> messageCallback) {
+        if (isRunSynchronized.get()) {
+            return;
         }
-        tagPath.append(suffix);
-        singleThread.submit(() -> command.execute(String.format(buildCommandString, fullPath, tagPath.toString()), callback));
+        singleThread.submit(() -> CommandFactory.createRebuildApkCommand(receiver, new CommandFactory.CommandParamskBuild()
+                .setMessageCallback(messageCallback)
+                .setStateCallback(Optional.of(stateCallback))
+                .putParamByKey("fullPath", fullPath)).execute());
     }
 
     /**
      * 开始对apk进行签名
      */
-    public void comandSigner(String storPath, String storpass, String keypass, String unsignApk, String alias, InvokerCallback callback) {
-        File apk = new File(unsignApk);
-        String newName = apk.getName().substring(0, apk.getName().lastIndexOf(".")) + "_signed.apk";
-        String outputApk = apk.getParent() + SomeUtils.getFileSeparator() + newName;
-        singleThread.submit(() -> command.execute(String.format(signerCommandString, storPath, storpass, keypass, outputApk, unsignApk, alias), callback));
+    public void comandSigner(String storPath, String storpass, String keypass, String unsignApk, String alias,
+                             Optional<InvokerMessageCallback> messageCallback) {
+        if (isRunSynchronized.get()) {
+            return;
+        }
+        singleThread.submit(() -> CommandFactory.createSignerApkCommand(receiver, new CommandFactory.CommandParamskBuild()
+                .setMessageCallback(messageCallback)
+                .setStateCallback(Optional.of(stateCallback))
+                .putParamByKey("storPath", storPath)
+                .putParamByKey("storpass", storpass)
+                .putParamByKey("keypass", keypass)
+                .putParamByKey("unsignApk", unsignApk)
+                .putParamByKey("alias", alias)
+        ).execute());
     }
 
     public void destory() {
-        command.destory();
         singleThread.shutdownNow();
         instance = null;
     }
-
-    /**
-     * 反编译apk命令，两个参数：一个apk路径，一个生成的文件路径（该文件路径应该不存在）
-     */
-    private final String decodeCommandString = decodJar + "apktool decode %s -o %s";
-
-    /**
-     * 重编译apk命令，两个参数：一个文件夹路径，一个生成的apk路径
-     */
-    private final String buildCommandString = decodJar + "apktool build -advance %s -o %s";
-
-    /**
-     * jarsigner -verbose -sigalg SHA1withRSA -digestalg SHA1 -keystore itools.jks -storepass *** -keypass *** -signedjar new_signed.apk new.apk itools
-     * 开始对apk进行签名
-     * 第一个参数：密钥文件路径<br>
-     * 第二个参数：密钥文件密码<br>
-     * 第三个参数：专用密钥密码（一般都是密钥文件密码一致）<br>
-     * 第四个参数：未签名apk路径<br>
-     * 第五个参数：输出签名apk路径<br>
-     * 第六个参数：密钥别名<br>
-     */
-    private final String signerCommandString = "jarsigner -verbose -sigalg SHA1withRSA -digestalg SHA1 -keystore %s -storepass %s -keypass %s -signedjar %s %s %s";
 
 }

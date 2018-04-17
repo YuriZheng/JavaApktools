@@ -1,14 +1,15 @@
 package com.zyj.apktools.component;
 
-import com.zyj.apktools.SomeUtils;
+import com.zyj.apktools.Utils;
 import com.zyj.apktools.command.Invoker;
-import com.zyj.apktools.command.InvokerCallback;
+import com.zyj.apktools.command.InvokerMessageCallback;
 import com.zyj.apktools.factory.Factory;
 
 import java.awt.event.ActionEvent;
 import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Optional;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
@@ -31,16 +32,14 @@ public final class MainPresenter {
 
     private SimpleDateFormat time = new SimpleDateFormat("yyyy-MM-dd-HH mm:ss");
     private StringBuilder cacheBuilder = new StringBuilder();
-    private InvokerCallback callback = (statue, message) -> {
+    private InvokerMessageCallback callback = (message) -> {
         synchronized (cacheBuilder) {
             cacheBuilder.delete(0, cacheBuilder.length());
             cacheBuilder.append(time.format(new Date()));
             cacheBuilder.append("   ");
-            cacheBuilder.append(statue);
-            cacheBuilder.append("   ");
             cacheBuilder.append(message);
             final String lineMessage = new String(cacheBuilder.toString());
-            SomeUtils.l(lineMessage);
+            Utils.l(lineMessage);
             insert(lineMessage);
         }
     };
@@ -78,7 +77,7 @@ public final class MainPresenter {
                 showDialog("警告", "只能选择apk文件进行反编译，请先选择文件", JOptionPane.WARNING_MESSAGE);
                 return;
             }
-            Invoker.getInstence().comandDecod(fullPath, callback);
+            Invoker.getInstence().comandDecod(fullPath, Optional.of(callback));
         }
     };
 
@@ -89,7 +88,7 @@ public final class MainPresenter {
                 showDialog("警告", "只能选择文件夹进行编译，请先选择文件夹", JOptionPane.WARNING_MESSAGE);
                 return;
             }
-            Invoker.getInstence().comandBuild(fullPath, callback);
+            Invoker.getInstence().comandRebuild(fullPath, Optional.of(callback));
         }
     };
 
@@ -101,7 +100,7 @@ public final class MainPresenter {
                 return;
             }
             new SingerInputDialog(mainFrame).setListener(info -> Invoker.getInstence().comandSigner(info.keyPath, info.storePassword,
-                    info.keyPassword, fullPath, info.alias, callback)).setVisible(true);
+                    info.keyPassword, fullPath, info.alias, Optional.of(callback))).setVisible(true);
         }
     };
 

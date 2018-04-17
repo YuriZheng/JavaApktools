@@ -7,14 +7,13 @@ package com.zyj.apktools.command;
  * Email: 497393102@qq.com<br>
  * Description: NON
  */
-public interface InvokerCallback {
+public interface InvokerMessageCallback {
 
     /**
      * 命令执行回调
      *
-     * @param statue  回调状态，{@link Command#RESULT_NORMAL}、{@link Command#RESULT_ERROR}
      * @param message 回调消息
      */
-    void callback(String statue, String message);
+    void callback(String message);
 
 }
