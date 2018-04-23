@@ -1,6 +1,5 @@
 package com.zyj.apktools.command.command;
 
-import com.zyj.apktools.Utils;
 import com.zyj.apktools.command.Receiver;
 
 import java.io.File;
@@ -10,7 +9,7 @@ import java.io.File;
  * <p>
  * Author: Yuri.zheng<br>
  * Email: 497393102@qq.com<br>
- * Description: 命令发出者
+ * Description: 给APK进行签名
  */
 final class SignerApkCommand extends AbstractCommand {
 
@@ -39,7 +38,7 @@ final class SignerApkCommand extends AbstractCommand {
     @Override public void execute() {
         File apk = new File(unsignApk);
         String newName = apk.getName().substring(0, apk.getName().lastIndexOf(".")) + "_signed.apk";
-        File outFile = new File(apk.getParent() + Utils.getFileSeparator() + newName);
+        File outFile = new File(apk.getParent() + File.separator + newName);
         if (outFile.exists()) {
             outFile.delete();
         }

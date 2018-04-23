@@ -112,16 +112,16 @@ public class Utils {
         }
     }
 
-    public static String getFileSeparator() {
-        return PROPERTIES.getProperty("file.separator");
-    }
-
-    public static String getPathSeparator() {
-        return PROPERTIES.getProperty("path.separator");
-    }
-
-    public static String getOsName() {
-        return PROPERTIES.getProperty("os.name");
-    }
+//    public static String getFileSeparator() {
+//        return PROPERTIES.getProperty("file.separator");
+//    }
+//
+//    public static String getPathSeparator() {
+//        return PROPERTIES.getProperty("path.separator");
+//    }
+//
+//    public static String getOsName() {
+//        return PROPERTIES.getProperty("os.name");
+//    }
 
 }

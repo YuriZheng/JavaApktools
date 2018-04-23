@@ -1,6 +1,5 @@
 package com.zyj.apktools.command.command;
 
-import com.zyj.apktools.Utils;
 import com.zyj.apktools.command.Receiver;
 
 import java.io.File;
@@ -10,7 +9,7 @@ import java.io.File;
  * <p>
  * Author: Yuri.zheng<br>
  * Email: 497393102@qq.com<br>
- * Description: 命令发出者
+ * Description: 重打包成apk
  */
 final class RebuildApkCommand extends AbstractCommand {
 
@@ -26,13 +25,13 @@ final class RebuildApkCommand extends AbstractCommand {
     }
 
     @Override public void execute() {
-        final String separator = Utils.getFileSeparator();
+        final String separator = File.separator;
         final String parentPath = new File(filePath).getParent();
         final StringBuilder tagPath = new StringBuilder(parentPath);
         final String suffix = "_out.apk";
         if (parentPath.contains(separator)) {
             tagPath.append(separator);
-            tagPath.append(filePath.substring(filePath.lastIndexOf(Utils.getFileSeparator()) + 1));
+            tagPath.append(filePath.substring(filePath.lastIndexOf(File.separator) + 1));
 
         }
         tagPath.append(suffix);

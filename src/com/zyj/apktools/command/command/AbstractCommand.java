@@ -1,8 +1,9 @@
 package com.zyj.apktools.command.command;
 
-import com.zyj.apktools.Utils;
 import com.zyj.apktools.command.Command;
 import com.zyj.apktools.command.Receiver;
+
+import java.io.File;
 
 /**
  * CREATED ON: 2018/4/17 14:56
@@ -17,7 +18,7 @@ abstract class AbstractCommand implements Command {
 
     private final String apkJarName = "apktool_2.3.2.jar";
     private final String encoding = "-Duser.language=en -Dfile.encoding=UTF8";
-    private final String decodJar = String.format("java -jar %s .%slibs%s%s ", encoding, Utils.getFileSeparator(), Utils.getFileSeparator(), apkJarName);
+    private final String decodJar = String.format("java -jar %s .%slibs%s%s ", encoding, File.separator, File.separator, apkJarName);
 
     public AbstractCommand(Receiver receiver) {
         this.receiver = receiver;
