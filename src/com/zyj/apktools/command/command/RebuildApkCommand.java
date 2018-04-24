@@ -28,7 +28,7 @@ final class RebuildApkCommand extends AbstractCommand {
         final String separator = File.separator;
         final String parentPath = new File(filePath).getParent();
         final StringBuilder tagPath = new StringBuilder(parentPath);
-        final String suffix = "unsign__out.apk";
+        final String suffix = "_unsign__out.apk";
         if (parentPath.contains(separator)) {
             tagPath.append(separator);
             tagPath.append(filePath.substring(filePath.lastIndexOf(File.separator) + 1));
