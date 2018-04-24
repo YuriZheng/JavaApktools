@@ -16,7 +16,7 @@ final class RebuildApkCommand extends AbstractCommand {
     /**
      * 重编译apk命令，两个参数：一个文件夹路径，一个生成的apk路径
      */
-    private final String buildCommandString = getDecodJar() + "apktool build -advance %s -o %s";
+    private final String buildCommandString = getDecodJar() + "apktool build %s -o %s";
 
     private String filePath;
 
@@ -28,7 +28,7 @@ final class RebuildApkCommand extends AbstractCommand {
         final String separator = File.separator;
         final String parentPath = new File(filePath).getParent();
         final StringBuilder tagPath = new StringBuilder(parentPath);
-        final String suffix = "_out.apk";
+        final String suffix = "unsign__out.apk";
         if (parentPath.contains(separator)) {
             tagPath.append(separator);
             tagPath.append(filePath.substring(filePath.lastIndexOf(File.separator) + 1));

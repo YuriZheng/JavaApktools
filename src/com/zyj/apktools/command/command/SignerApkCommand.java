@@ -23,7 +23,7 @@ final class SignerApkCommand extends AbstractCommand {
      * 第五个参数：输出签名apk路径<br>
      * 第六个参数：密钥别名<br>
      */
-    private final String signerCommandString = "jarsigner -verbose -sigalg SHA1withRSA -digestalg SHA1 -keystore %s -storepass %s -keypass %s -signedjar %s %s %s";
+    private final String signerCommandString = "java -jarsigner %s -verbose -sigalg SHA1withRSA -digestalg SHA1 -keystore %s -storepass %s -keypass %s -signedjar %s %s %s";
 
     private String storPath;
     private String storpass;
@@ -42,7 +42,7 @@ final class SignerApkCommand extends AbstractCommand {
         if (outFile.exists()) {
             outFile.delete();
         }
-        getReceiver().doAction(String.format(signerCommandString, storPath, storpass, keypass, outFile.getAbsolutePath(), unsignApk, alias));
+        getReceiver().doAction(String.format(signerCommandString, getEncoding(), storPath, storpass, keypass, outFile.getAbsolutePath(), unsignApk, alias));
     }
 
     public SignerApkCommand setStorPath(String storPath) {
